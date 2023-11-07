@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  image-svc:
+    image: rmlajer/image-service:latest
+    container_name: image-svc
+    environment:
+      connectionstring: 'UserID=hello_potato_user;Password=CMjK5usFA4iwtBgU6sCrMq04Rarf4LnL;Host=dpg-ckfskp6afg7c73bbt550-a.frankfurt-postgres.render.com;Port=5432;Database=hello_potato'
+    expose:
+      - "80"
+    
+  recipe-svc:
+    image: rmlajer/recipe-service:latest
+    container_name: recipe-svc
+    environment:
+      connectionstring: 'UserID=hello_potato_user;Password=CMjK5usFA4iwtBgU6sCrMq04Rarf4LnL;Host=dpg-ckfskp6afg7c73bbt550-a.frankfurt-postgres.render.com;Port=5432;Database=hello_potato'
+    expose:
+      - "80"
+
+  nginx:
+    image: nginx:latest
+    volumes:
+    - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+    - image-svc
+    - recipe-svc
+    ports:
+    - "4000:4000"
